@@ -1,4 +1,4 @@
-const subCategory = require("../models/subcategoryModel");
+const Subcategory = require("../models/subcategoryModel");
 
 const createsubCategory = async (req, res) => {
   try {
@@ -31,55 +31,38 @@ const createsubCategory = async (req, res) => {
 
 const getSubcategory = async (req, res) => {
   try {
-    const { identifier } = req.params;
+    const { subname, subid, catid } = req.query;
+    let subcategories;
 
-    // Check if identifier exists
-    if (identifier) {
-      // Identifier provided
+    // Check if any of the query parameters exist
+    if (subname) {
+      // Query by subcategory name
+      subcategories = await Subcategory.find({
+        name: { $regex: subname, $options: "i" },
+      });
+    } else if (subid) {
+      // Query by subcategory ID
+      subcategories = await Subcategory.findById(subid);
+    } else if (catid) {
+      // Query by category ID
+      subcategories = await Subcategory.find({ category: catid });
+    } else {
+      // No specific query, fetch all subcategories
+      subcategories = await Subcategory.find();
+    }
 
-      // Check if identifier is not a number
-      if (isNaN(identifier)) {
-        // Identifier is not a number, try to find subcategory by name
-        const subcategoriesByName = await Subcategory.find({
-          name: { $regex: identifier, $options: "i" },
-        });
-        if (subcategoriesByName.length > 0) {
-          // Subcategory(s) found, return them
-          return res
-            .status(200)
-            .json({ success: true, subcategories: subcategoriesByName });
-        }
-      } else {
-        // Identifier is a number, try to find subcategory by ID
-        const subcategory = await Subcategory.findById(identifier);
-        if (subcategory) {
-          // Subcategory found, return it
-          return res.status(200).json({ success: true, subcategory });
-        }
-
-        // If identifier is not a subcategory ID, check if it's a category ID
-        const category = await Category.findById(identifier);
-        if (category) {
-          // Identifier is a category ID, fetch subcategories under that category
-          const subcategories = await Subcategory.find({
-            category: identifier,
-          });
-          return res.status(200).json({ success: true, subcategories });
-        }
-      }
-
-      // No subcategory found with the provided identifier
+    // Check if subcategory found
+    if (!subcategories) {
       return res
         .status(404)
         .json({ success: false, error: "Subcategory not found" });
-    } else {
-      // No identifier provided, fetch all subcategories
-      const subcategories = await Subcategory.find();
-      return res.status(200).json({ success: true, subcategories });
     }
+
+    // Return subcategory(s) in response
+    return res.status(200).json({ success: true, subcategories });
   } catch (err) {
     console.error("Error getting subcategory:", err);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: "Internal Server Error Check Console for more Details",
     });
