@@ -3,8 +3,15 @@ const Subcategory = require("../models/subcategoryModel");
 const createsubCategory = async (req, res) => {
   try {
     // Extract data from request body
-    const { name, img, desc, taxApplicable, taxPercentage, taxType, category } =
-      req.body;
+    const {
+      name,
+      img,
+      desc,
+      taxApplicable,
+      taxPercentage,
+      taxType,
+      categoryId,
+    } = req.body;
 
     // Create a new subcategory instance
     const newSubcategory = new Subcategory({
@@ -14,7 +21,7 @@ const createsubCategory = async (req, res) => {
       taxApplicable,
       taxPercentage,
       taxType,
-      category,
+      category: categoryId,
     });
 
     // Save the new subcategory to the database
@@ -69,7 +76,53 @@ const getSubcategory = async (req, res) => {
   }
 };
 
+const editSubcategory = async (req, res) => {
+  try {
+    const subId = req.params.subId;
+    const { name, img, desc } = req.body;
+
+    if (!name && !img && !desc) {
+      return res
+        .status(400)
+        .json({ success: true, message: "There's nothing to update" });
+    }
+
+    const subcategory = await Subcategory.findById(subId);
+
+    if (!subcategory) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Subcategory not found" });
+    }
+
+    if (name) {
+      subcategory.name = name;
+    }
+    if (img) {
+      subcategory.img = img;
+    }
+    if (desc) {
+      subcategory.desc = desc;
+    }
+
+    const updatedSubcategory = await subcategory.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Subcategory Updated Successfully",
+      updatedSubcategory,
+    });
+  } catch (err) {
+    console.error("Error updating subcategory:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error. Check Log for more details.",
+    });
+  }
+};
+
 module.exports = {
   createsubCategory,
   getSubcategory,
+  editSubcategory,
 };

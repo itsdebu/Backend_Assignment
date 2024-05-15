@@ -77,3 +77,47 @@ const getItems = async (req, res) => {
     });
   }
 };
+
+const editItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const { name, img, desc } = req.body;
+
+    if (!name && !img && !desc) {
+      return res
+        .status(400)
+        .json({ success: true, message: "There's nothing to update" });
+    }
+
+    const item = await Item.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({ success: false, error: "Item not found" });
+    }
+
+    if (name) {
+      item.name = name;
+    }
+    if (img) {
+      item.img = img;
+    }
+    if (desc) {
+      item.desc = desc;
+    }
+    const updatedItem = await item.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Item Updated Successfully",
+      updatedItem,
+    });
+  } catch (err) {
+    console.error("Error updating item:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error. Check Log for more details.",
+    });
+  }
+};
+
+module.exports = { createItem, getItems, editItem };
