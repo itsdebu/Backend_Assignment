@@ -6,10 +6,10 @@ const subcategorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    img: {
       type: String,
     },
-    description: {
+    desc: {
       type: String,
     },
     taxApplicable: {
