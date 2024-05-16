@@ -17,7 +17,7 @@ const subcategorySchema = new mongoose.Schema(
       default: false,
     },
     taxPercentage: {
-      type: Number,
+      type: String,
     },
     taxType: {
       type: String,

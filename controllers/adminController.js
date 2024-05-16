@@ -66,7 +66,7 @@ const adminLogin = async (req, res) => {
 
   try {
     const admin = await Admin.findOne({ email });
-    if (admin) {
+    if (!admin) {
       return res.status(400).json({
         success: false,
         message: "Admin is not registered with this email.",
@@ -82,14 +82,13 @@ const adminLogin = async (req, res) => {
     // Generating jwt token
     const tokenPayload = { adminId: admin._id, email: admin.email };
     const accessToken = jwt.sign(tokenPayload, process.env.SECRETKEY, {
-      expiresIn: "365d",
+      expiresIn: "2h", //change accordingly
     });
 
     res.status(200).json({
-      message: "Logged In Successfully",
-      admin,
-      token: accessToken,
       success: true,
+      message: "Logged In Successfully",
+      token: accessToken,
     });
   } catch (err) {
     return res.status(500).json({

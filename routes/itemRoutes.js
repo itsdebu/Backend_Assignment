@@ -8,7 +8,7 @@ const {
 const { validateToken } = require("../middleware/ValidateTokenHandler");
 
 router.post("/create", validateToken, createItem);
-router.put("/:itemId", validateToken, editItem);
+router.post("/edit/:itemId", validateToken, editItem);
 router.get("/get", getItems);
 
 module.exports = router;

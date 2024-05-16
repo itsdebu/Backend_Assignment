@@ -22,6 +22,10 @@ const categorySchema = new mongoose.Schema(
     taxType: {
       type: String,
     },
+    subcategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subcategory", // Referencing the Subcategory model
+    },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

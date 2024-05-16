@@ -8,7 +8,7 @@ const {
 const { validateToken } = require("../middleware/ValidateTokenHandler");
 
 router.post("/create", validateToken, createCategory);
-router.post("/:categoryId", validateToken, editCategory);
+router.post("/edit/:categoryId", validateToken, editCategory);
 // using this same api we can get all the categoriesby using req.query
 router.get("/get", getCategories);
 

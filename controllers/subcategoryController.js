@@ -1,26 +1,27 @@
 const Subcategory = require("../models/subcategoryModel");
+const Category = require("../models/categoryModel");
 
 const createsubCategory = async (req, res) => {
   try {
     // Extract data from request body
-    const {
-      name,
-      img,
-      desc,
-      taxApplicable,
-      taxPercentage,
-      taxType,
-      categoryId,
-    } = req.body;
+    const { name, img, desc, categoryId } = req.body;
 
-    // Create a new subcategory instance
+    // Fetch the category details
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res
+        .status(404)
+        .json({ error: "Category not found with this categoryId" });
+    }
+
+    // Create a new subcategory instance with category details
     const newSubcategory = new Subcategory({
       name,
       img,
       desc,
-      taxApplicable,
-      taxPercentage,
-      taxType,
+      taxApplicable: category.taxApplicable,
+      taxPercentage: category.taxPercentage,
+      taxType: category.taxType,
       category: categoryId,
     });
 
@@ -28,11 +29,13 @@ const createsubCategory = async (req, res) => {
     const savedSubcategory = await newSubcategory.save();
 
     // Respond with the saved subcategory
-    res.status(201).json(savedSubcategory);
+    res.status(201).json({ success: true, savedSubcategory });
   } catch (err) {
     // Handle errors
     console.error("Error creating subcategory:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error Check logs for more details." });
   }
 };
 
@@ -68,7 +71,7 @@ const getSubcategory = async (req, res) => {
     // Return subcategory(s) in response
     return res.status(200).json({ success: true, subcategories });
   } catch (err) {
-    console.error("Error getting subcategory:", err);
+    console.error("Error getting subcategory, provided data is wrong:", err);
     return res.status(500).json({
       success: false,
       error: "Internal Server Error Check Console for more Details",
@@ -78,7 +81,7 @@ const getSubcategory = async (req, res) => {
 
 const editSubcategory = async (req, res) => {
   try {
-    const subId = req.params.subId;
+    const { subId } = req.params;
     const { name, img, desc } = req.body;
 
     if (!name && !img && !desc) {

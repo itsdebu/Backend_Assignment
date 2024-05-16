@@ -1,26 +1,54 @@
 const Item = require("../models/itemModels");
+const Category = require("../models/categoryModel");
+const Subcategory = require("../models/subcategoryModel");
 
 const createItem = async (req, res) => {
   try {
     // Extract item details from request body
     const {
       name,
-      image,
-      description,
-      taxApplicable,
-      taxPercentage,
+      img,
+      desc,
       baseAmount,
       discount,
       totalAmount,
-      categoryId,
       subcategoryId,
     } = req.body;
+
+    let { categoryId } = req.body;
+
+    // Initialize variables to store tax details
+    let taxApplicable, taxPercentage;
+
+    // Fetch tax details from category if categoryId is provided
+    if (categoryId) {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      taxApplicable = category.taxApplicable;
+      taxPercentage = category.taxPercentage;
+    }
+
+    // If subcategoryId is provided, fetch tax details from subcategory
+    if (subcategoryId) {
+      const subcategory = await Subcategory.findById(subcategoryId);
+      if (!subcategory) {
+        return res.status(404).json({ error: "Subcategory not found" });
+      }
+      taxApplicable = subcategory.taxApplicable;
+      taxPercentage = subcategory.taxPercentage;
+      // Update categoryId if not provided in the request body
+      if (!categoryId) {
+        categoryId = subcategory.category;
+      }
+    }
 
     // Create a new item instance
     const newItem = new Item({
       name,
-      image,
-      description,
+      img,
+      desc,
       taxApplicable,
       taxPercentage,
       baseAmount,

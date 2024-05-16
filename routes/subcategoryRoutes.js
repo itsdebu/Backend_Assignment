@@ -8,7 +8,7 @@ const {
 const { validateToken } = require("../middleware/ValidateTokenHandler");
 
 router.post("/create", validateToken, createsubCategory);
-router.put("/:subcategoryId", validateToken, editSubcategory);
+router.post("/edit/:subId", validateToken, editSubcategory);
 // Get all subcategories using query.
 router.get("/get", getSubcategory);
 

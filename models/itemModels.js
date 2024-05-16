@@ -6,10 +6,10 @@ const itemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    img: {
       type: String,
     },
-    description: {
+    desc: {
       type: String,
     },
     taxApplicable: {
@@ -17,7 +17,7 @@ const itemSchema = new mongoose.Schema(
       default: false,
     },
     taxPercentage: {
-      type: Number,
+      type: String,
     },
     baseAmount: {
       type: Number,
