@@ -6,6 +6,12 @@ const createsubCategory = async (req, res) => {
     // Extract data from request body
     const { name, img, desc, categoryId } = req.body;
 
+    if (!name || !img || !desc || !categoryId) {
+      return res
+        .status(400)
+        .json({ error: "All the required field should be there" });
+    }
+
     // Fetch the category details
     const category = await Category.findById(categoryId);
     if (!category) {

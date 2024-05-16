@@ -5,17 +5,21 @@ const Subcategory = require("../models/subcategoryModel");
 const createItem = async (req, res) => {
   try {
     // Extract item details from request body
-    const {
-      name,
-      img,
-      desc,
-      baseAmount,
-      discount,
-      totalAmount,
-      subcategoryId,
-    } = req.body;
+    const { name, img, desc, baseAmount, discount, totalAmount } = req.body;
 
-    let { categoryId } = req.body;
+    if (!name || !img || !desc || !baseAmount || !discount || !totalAmount) {
+      return res
+        .status(400)
+        .json({ error: "All the required field should be there." });
+    }
+
+    let { categoryId, subcategoryId } = req.body;
+
+    if (!categoryId && !subcategoryId) {
+      return res
+        .status(400)
+        .json({ error: "Parent id for subcategory or category is missing" });
+    }
 
     // Initialize variables to store tax details
     let taxApplicable, taxPercentage;

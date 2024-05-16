@@ -5,6 +5,19 @@ const createCategory = async (req, res) => {
     // Extract data from the request body
     const { name, img, desc, taxApplicable, taxPercentage, taxType } = req.body;
 
+    if (
+      !name ||
+      !img ||
+      !desc ||
+      !taxApplicable ||
+      !taxPercentage ||
+      !taxType
+    ) {
+      return res
+        .status(400)
+        .json({ error: "All the required field should be there." });
+    }
+
     // Create a new category instance
     const newCategory = new Category({
       name,
@@ -31,21 +44,17 @@ const createCategory = async (req, res) => {
 
 const getCategories = async (req, res) => {
   try {
-    const { identifier } = req.params;
+    const { catname, catId } = req.query;
     let categories;
 
     // Check if identifier exists
-    if (identifier) {
-      // Identifier provided, search for category by name or ID
-      if (!isNaN(identifier)) {
-        // Identifier is a number, assume it's an ID
-        categories = await Category.findById(identifier);
-      } else {
-        // Identifier is a string, assume it's a name
-        categories = await Category.find({
-          name: { $regex: identifier, $options: "i" },
-        });
-      }
+    if (catId) {
+      categories = await Category.findById(catId);
+    } else if (catname) {
+      // Identifier is a string, assume it's a name
+      categories = await Category.find({
+        name: { $regex: catname, $options: "i" },
+      });
     } else {
       // No identifier provided, fetch all categories
       categories = await Category.find();
