@@ -64,6 +64,32 @@ Authentication is required for certain routes. It is implemented using JWT token
 - To get items by category, send a GET request to `/api/item/get?catid=your_category_id`.
 - To get an item by ID, send a GET request to `/api/item/get?itemid=your_item_id`.
 
+### Questions:
+
+### Which database you have chosen and why?
+
+I chose **MongoDB** because it offers:
+
+1. **Flexibility and Scalability**: Adaptable schema design and horizontal scaling.
+2. **Document-Oriented Storage**: Intuitive JSON-like documents for hierarchical data.
+3. **Ease of Integration**: Seamless integration with Node.js through Mongoose.
+
+### 3 Things That You Learned from This Assignment
+
+1. **API Design and Implementation**: Creating RESTful APIs and handling various HTTP methods.
+2. **Authentication and Authorization**: Implementing JWT-based authentication and protecting routes.
+3. **Error Handling and Validation**: Using Joi for input validation and ensuring robust error handling.
+
+### What Was the Most Difficult Part of the Assignment?
+
+Managing relationships between categories, subcategories, and items, ensuring the correct hierarchical structure and propagation of updates.
+
+### What You Would Have Done Differently Given More Time?
+
+1. **Comprehensive Testing**: Added more unit and integration tests.
+2. **Enhanced Security Measures**: Implemented advanced security practices like rate limiting and data encryption.
+3. **Optimized Performance**: Improved database query performance and overall application efficiency.
+
 
 ### Thankyou 
 ### Assignment By Divyanshu Verma
