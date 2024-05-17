@@ -14,6 +14,11 @@ dotenv.config();
 // Connection to mongodb
 connectdb();
 
+// Home route
+app.get('/', (req, res) => {
+  res.send('Hello from backend');
+});
+
 app.use("/api/category", categoryRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/subcategory", subcategoryRoutes);
